@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.obsidian/app.json
+.obsidian/appearance.json
+.obsidian/core-plugins.json
+.obsidian/hotkeys.json
+.obsidian/workspace
