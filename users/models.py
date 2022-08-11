@@ -1,11 +1,16 @@
+
+# accounts/models.py
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Create your models here.
+class CustomUser(AbstractUser):
 
-class User(models.Model):
-    username = models.CharField(max_length=30)
+    username = models.CharField(max_length=30, unique=True)
+
     password = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(max_length=100, unique=True)
+    api_key = models.CharField(max_length=100)
+
 
     def __str__(self):
         return self.email
