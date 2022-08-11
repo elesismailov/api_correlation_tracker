@@ -1,17 +1,17 @@
-from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from django.views import View
 
 # Create your views here.
 
-def index(req):
-
-    return JsonResponse({'msg': 'tracks index'})
-
-
 class Index(View):
 
     def get(self, req):
-        
-        return JsonResponse({'msg': 'Class based index'})
+        print(req.method)
+        return JsonResponse({'msg': 'Get all tracks.'})
+
+    def post(self, req):
+        print(req.method)
+        return JsonResponse({'msg': 'Create new track.'})
+

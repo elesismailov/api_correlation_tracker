@@ -30,3 +30,6 @@ urlpatterns = [
     # path('api/bullets/', include('api.bullets.urls')),
     # path('api/streaks/', include('api.streaks.urls')),
 ]
+
+
+
