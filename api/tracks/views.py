@@ -10,7 +10,9 @@ from .models import Track
 class Index(View):
 
     def get(self, req):
-        print(req.method)
+
+        print(timezone.now())
+
         return JsonResponse({'msg': 'Get all tracks.'})
 
 
