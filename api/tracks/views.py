@@ -1,5 +1,6 @@
 from django.http import JsonResponse, HttpResponse
 from django.views import View
+from django.core.serializers import serialize
 
 import json
 
@@ -11,15 +12,22 @@ class Index(View):
 
     def get(self, req):
 
-        print(timezone.now())
+        # limit = Track.objects.count() or 10
+        
+        tracks = Track.objects.all()
 
-        return JsonResponse({'msg': 'Get all tracks.'})
+        return JsonResponse({
+            'msg': 'Get all tracks.',
+            'tracks': serialize('json', tracks),
+            })
 
 
     def post(self, req):
 
         request_body = json.loads(req.body.decode('utf-8'))
         # TODO handle request body errors 400
+
+        # TODO check whether user has a track of the same title
 
         track = Track(
                 user = req.current_user,
