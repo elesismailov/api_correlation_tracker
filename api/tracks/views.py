@@ -4,18 +4,18 @@ from django.core.serializers import serialize
 
 import json
 
-from .models import Track
+from .models import Track, TrackEntry
 from .serializers import TrackSerializer
 
 # Create your views here.
 
 class Index(View):
 
-    def get(self, req):
+    def get(self, request):
 
         # limit = Track.objects.count() or 10
 
-        user = req.current_user
+        user = request.current_user
         
         tracks = Track.objects.filter(user=user)
 
@@ -25,15 +25,15 @@ class Index(View):
         return JsonResponse({ 'tracks': serializer.data }, safe=False)
 
 
-    def post(self, req):
+    def post(self, request):
 
-        request_body = json.loads(req.body.decode('utf-8'))
+        request_body = json.loads(request.body.decode('utf-8'))
         # TODO handle request body errors 400
 
         # TODO check whether user has a track of the same title
 
         track = Track(
-                user = req.current_user,
+                user = request.current_user,
                 title = request_body.get('title'),
                 description = request_body.get('description', ''),
                 color = request_body.get('color', ''),
@@ -47,3 +47,22 @@ class Index(View):
 
 
 
+class Entry(View):
+
+    def post(self, request):
+
+        request_body = json.loads(request.body.decode('utf-8'))
+        # TODO handle request body errors 400
+
+        track = Track.objects.get(id=request_body["track_id"])
+        # TODO handle no track error
+
+        # TODO handle entry if exists, update
+        entry = TrackEntry(
+                track = track,
+                rating = request_body.get('rating'),
+                )
+
+        entry.save()
+
+        return JsonResponse({ "entry": entry}, status=201)
