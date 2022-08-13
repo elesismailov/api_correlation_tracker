@@ -7,13 +7,18 @@ from django.http import JsonResponse
 from users.models import CustomUser
 
 
-class AuthMiddleware:
+class ApiAuthMiddleware:
 
     def __init__(self, get_response):
 
         self.get_response = get_response
 
     def __call__(self, request):
+
+        # TODO Do something about it
+        if request.path[0:4] != '/api':
+            response = self.get_response(request)
+            return response
 
         api_key = request.headers.get('X-API-KEY')
 

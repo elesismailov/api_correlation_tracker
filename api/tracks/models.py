@@ -38,4 +38,4 @@ class TrackEntry(models.Model):
     rating = models.IntegerField()
 
     def __str__(self):
-        return track.title + ' ' + str(self.date) + ' - ' + str(self.rating)
+        return self.track.title + ' ' + str(self.date) + ' - ' + str(self.rating)
