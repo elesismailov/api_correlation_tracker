@@ -15,9 +15,6 @@ class AuthMiddleware:
 
     def __call__(self, request):
 
-        # TODO check request.header.api_key in database
-        # if match return request with .current_user property
-
         api_key = request.headers.get('X-API-KEY')
 
         if not api_key:
