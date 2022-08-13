@@ -29,3 +29,13 @@ class Track(models.Model):
     def __str__(self):
 
         return self.title + ' - ' + self.user.email
+
+class TrackEntry(models.Model):
+
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    date  = models.DateField(unique=True)
+    # rating = models.IntegerField(min_value=0, max_value=10)
+    rating = models.IntegerField()
+
+    def __str__(self):
+        return track.title + ' ' + str(self.date) + ' - ' + str(self.rating)
