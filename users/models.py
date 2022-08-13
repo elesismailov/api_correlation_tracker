@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
 
     password    = models.CharField(max_length=100)
     email       = models.EmailField(max_length=100, unique=True)
-    api_key     = models.CharField(max_length=100)
+    api_key     = models.CharField(max_length=100, unique=True)
 
     created     = models.DateTimeField(editable=False)
     modified    = models.DateTimeField()
@@ -24,7 +24,13 @@ class CustomUser(AbstractUser):
 
             # TODO Generate random string
 
-            self.api_key = generate_key()
+            api_key = generate_key()
+
+            # if key somehow exists re-generate it
+            while len(CustomUser.objects.filter(api_key=api_key)) != 0:
+                api_key = generate_key()
+                
+            self.api_key = api_key
             
             self.created = timezone.now()
 
