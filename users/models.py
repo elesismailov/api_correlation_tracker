@@ -1,6 +1,7 @@
 
 # accounts/models.py
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 from django.db import models
 
 from .helpers import generate_key

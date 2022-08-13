@@ -14,8 +14,11 @@ class Index(View):
     def get(self, req):
 
         # limit = Track.objects.count() or 10
+
+        user = req.current_user
         
-        tracks = Track.objects.all()
+        tracks = Track.objects.filter(user=user)
+
         serializer = TrackSerializer(tracks, many=True)
 
         # TODO ? add some additional fields
