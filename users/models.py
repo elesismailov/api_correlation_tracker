@@ -3,6 +3,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from .helpers import generate_key
+
 class CustomUser(AbstractUser):
 
     username    = models.CharField(max_length=30, unique=True)
@@ -18,6 +20,11 @@ class CustomUser(AbstractUser):
         ''' On save, update timestamps '''
 
         if not self.id:
+
+            # TODO Generate random string
+
+            self.api_key = generate_key()
+            
             self.created = timezone.now()
 
         self.modified = timezone.now()
