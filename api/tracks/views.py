@@ -5,6 +5,7 @@ from django.core.serializers import serialize
 import json
 
 from .models import Track
+from .serializers import TrackSerializer
 
 # Create your views here.
 
@@ -15,11 +16,10 @@ class Index(View):
         # limit = Track.objects.count() or 10
         
         tracks = Track.objects.all()
+        serializer = TrackSerializer(tracks, many=True)
 
-        return JsonResponse({
-            'msg': 'Get all tracks.',
-            'tracks': serialize('json', tracks),
-            })
+        # TODO ? add some additional fields
+        return JsonResponse({ 'tracks': serializer.data }, safe=False)
 
 
     def post(self, req):
