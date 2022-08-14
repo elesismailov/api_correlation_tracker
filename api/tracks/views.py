@@ -1,6 +1,9 @@
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.core.serializers import serialize
+from django.utils import timezone
+
+from django.db.utils import IntegrityError
 
 import json
 
@@ -64,21 +67,40 @@ class TrackView(View):
 
 class Entry(View):
 
+    # /api/tracks/track_id/entry
     def post(self, request, track_id):
 
-        request_body = json.loads(request.body.decode('utf-8'))
         # TODO handle request body errors 400
+        request_body = json.loads(request.body.decode('utf-8'))
 
-        track = Track.objects.get(id=request_body["track_id"])
-        # TODO handle no track error
+        # TODO handle 404
+        track = Track.objects.get(id=track_id)
 
-        # TODO handle entry if exists, update
         entry = TrackEntry(
                 track = track,
+                date = request_body.get('date', timezone.now().date()),
                 rating = request_body.get('rating'),
                 )
+       
+        try:
+            # CREATE NEW ENTRY
+            entry.save()
 
-        entry.save()
+        except IntegrityError as e:
+            # UPDATE ENTRY
+            entry = TrackEntry.objects.get(date=entry.date)
+            
+            entry.rating = request_body.get('rating')
+
+            entry.save()
+
+        except e:
+            raise e
 
         # TODO implement serializer
-        return JsonResponse({ "entry": entry}, status=201)
+        return JsonResponse({}, status=201)
+        # return JsonResponse({ "entry": entry}, status=201)
+
+
+
+
