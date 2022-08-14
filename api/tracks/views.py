@@ -31,8 +31,14 @@ class Index(View):
         request_body = json.loads(request.body.decode('utf-8'))
         # TODO handle request body errors 400
 
-        # TODO check whether user has a track of the same title
+        try:
+            track = Track.objects.get(user=request.current_user, title=request_body.get('title'))
+            if track:
+                return HttpResponse('Already exists.', status=400)
 
+        except Track.DoesNotExist as e:
+            pass
+        
         track = Track(
                 user = request.current_user,
                 title = request_body.get('title'),
@@ -62,6 +68,11 @@ class TrackView(View):
         # TODO ? add some additional fields
         return JsonResponse({ 'track': serializer.data }, safe=False)
 
+    
+    def put(self, request, track_id):
+        
+        # update track
+        pass 
 
 
 class Entry(View):
