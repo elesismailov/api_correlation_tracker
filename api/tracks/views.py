@@ -71,7 +71,19 @@ class Entry(View):
     # /api/tracks/track_id/entry/
     def get(self, request, track_id):
 
-        return JsonResponse({'msg': "Get last couple of entries"})
+        # TODO get query options [ number ]
+
+        # How many will be queried.
+        limit = 7
+
+        entries = TrackEntry.objects.order_by('date').reverse()[0:limit]
+
+        serializer = TrackEntrySerializer(entries, many=True)
+
+        return JsonResponse({
+            "limit": limit,
+            'entries': serializer.data,
+            })
 
 
     # /api/tracks/track_id/entry/
