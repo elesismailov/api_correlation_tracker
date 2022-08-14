@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 import json
 
 from .models import Track, TrackEntry
-from .serializers import TrackSerializer
+from .serializers import TrackSerializer, TrackEntrySerializer
 
 # Create your views here.
 
@@ -50,6 +50,7 @@ class Index(View):
 
 
 class TrackView(View):
+    # /api/tracks/track_id/
 
     def get(self, request, track_id):
 
@@ -67,7 +68,13 @@ class TrackView(View):
 
 class Entry(View):
 
-    # /api/tracks/track_id/entry
+    # /api/tracks/track_id/entry/
+    def get(self, request, track_id):
+
+        return JsonResponse({'msg': "Get last couple of entries"})
+
+
+    # /api/tracks/track_id/entry/
     def post(self, request, track_id):
 
         # TODO handle request body errors 400
@@ -97,8 +104,10 @@ class Entry(View):
         except e:
             raise e
 
-        # TODO implement serializer
-        return JsonResponse({}, status=201)
+        
+        serializer = TrackEntrySerializer(entry)
+
+        return JsonResponse({"entry": serializer.data}, status=202)
         # return JsonResponse({ "entry": entry}, status=201)
 
 
