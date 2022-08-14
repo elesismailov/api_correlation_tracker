@@ -22,8 +22,6 @@ class CustomUser(AbstractUser):
 
         if not self.id:
 
-            # TODO Generate random string
-
             api_key = generate_key()
 
             # if key somehow exists re-generate it

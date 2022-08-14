@@ -24,7 +24,6 @@ def apiIndex(req):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('auth/', include('auth.urls')),
     path('api/', apiIndex),
     path('api/tracks/', include('api.tracks.urls')),
     # path('api/bullets/', include('api.bullets.urls')),

@@ -16,8 +16,6 @@ class Index(View):
 
     def get(self, request):
 
-        # limit = Track.objects.count() or 10
-
         user = request.current_user
         
         tracks = Track.objects.filter(user=user)
@@ -72,8 +70,6 @@ class Entry(View):
     def get(self, request, track_id):
 
         # TODO get query options [ number ]
-
-        # How many will be queried.
         limit = 7
 
         entries = TrackEntry.objects.order_by('date').reverse()[0:limit]
@@ -105,7 +101,7 @@ class Entry(View):
             # CREATE NEW ENTRY
             entry.save()
 
-        except IntegrityError as e:
+        except IntegrityError:
             # UPDATE ENTRY
             entry = TrackEntry.objects.get(date=entry.date)
             
