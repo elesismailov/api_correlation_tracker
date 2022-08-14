@@ -46,10 +46,25 @@ class Index(View):
         return HttpResponse('New track has been created', status=201)
 
 
+class TrackView(View):
+
+    def get(self, request, track_id):
+
+        user = request.current_user
+
+        # TODO handle 404
+        track = Track.objects.get(id=track_id, user=user)
+
+        serializer = TrackSerializer(track)
+
+        # TODO ? add some additional fields
+        return JsonResponse({ 'track': serializer.data }, safe=False)
+
+
 
 class Entry(View):
 
-    def post(self, request):
+    def post(self, request, track_id):
 
         request_body = json.loads(request.body.decode('utf-8'))
         # TODO handle request body errors 400
@@ -65,4 +80,5 @@ class Entry(View):
 
         entry.save()
 
+        # TODO implement serializer
         return JsonResponse({ "entry": entry}, status=201)
