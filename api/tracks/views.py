@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db.utils import IntegrityError
 
 import json
+from json.decoder import JSONDecodeError
 
 from .models import Track, TrackEntry
 from .serializers import TrackSerializer, TrackEntrySerializer
@@ -30,8 +31,14 @@ class Index(View):
     # CREATE NEW TRACK
     def post(self, request):
 
-        request_body = json.loads(request.body.decode('utf-8'))
-        # TODO handle request body errors 400
+        try:
+            request_body = json.loads(request.body.decode('utf-8'))
+
+        except JSONDecodeError: 
+            return ResponseError.BadRequest(msg='Please provide json body.')
+
+        if not request_body.get('title').strip():
+            return ResponseError.BadRequest(msg='Please provide at least title.')
 
         try:
             track = Track.objects.get(user=request.current_user, title=request_body.get('title'))
@@ -48,11 +55,14 @@ class Index(View):
                 color = request_body.get('color', ''),
                 )
 
-        # TODO handle error 500
-        track.save()
+        # TODO define errors
+        try:
+            track.save()
 
-        # TODO refine response
-        return HttpResponse('New track has been created', status=201)
+        except Exception as e:
+            return ResponseError.SomethingWentWrong()
+
+        return JsonResponse({'msg': "Successfully created track."}, status=201)
 
 
 class TrackView(View):
@@ -62,31 +72,48 @@ class TrackView(View):
 
         user = request.current_user
 
-        # TODO handle 404
-        track = Track.objects.get(id=track_id, user=user)
+        try:
+            track = Track.objects.get(id=track_id, user=user)
 
-        serializer = TrackSerializer(track)
+        except Track.DoesNotExist:
+            return ResponseError.NotFound(err='TrackDoesNotExist')
 
-        # TODO ? add some additional fields
+        try:
+            serializer = TrackSerializer(track)
+        except Exception:
+            return ResponseError.SomethingWentWrong(err=Exception)
+
         return JsonResponse({ 'track': serializer.data }, safe=False)
 
-    
+    # Updating track
     def put(self, request, track_id):
 
-        # TODO handle request body errors 400
-        request_body = json.loads(request.body.decode('utf-8'))
+        try:
+            request_body = json.loads(request.body.decode('utf-8'))
+
+        except JSONDecodeError: 
+            return ResponseError.BadRequest(msg='Please provide json body.')
+
+        if len(request_body.keys()) == 0:
+            return ResponseError.BadRequest(msg='Please provide at least one field to update.')
 
         try:
             track = Track.objects.get(id=track_id)
+
         except Track.DoesNotExist as e:
+
             return ResponseError.NotFound(err='TrackDoesNotExist', msg='Track you are trying to update does not exist.')
 
-        track.title = request_body.get('title')
-        track.description = request_body.get('description', '')
-        track.color = request_body.get('color', '',)
+        track.title = request_body.get('title', track.title)
+        track.description = request_body.get('description', track.description)
+        track.color = request_body.get('color', track.color)
 
-        # TODO error handling
-        track.save()
+        # TODO define errors
+        try:
+            track.save()
+
+        except Exception:
+            return ResponseError.SomethingWentWrong()
 
         serializer = TrackSerializer(track)
 
@@ -124,11 +151,17 @@ class Entry(View):
     # /api/tracks/track_id/entry/
     def post(self, request, track_id):
 
-        # TODO handle request body errors 400
-        request_body = json.loads(request.body.decode('utf-8'))
+        try:
+            request_body = json.loads(request.body.decode('utf-8'))
 
-        # TODO handle 404
-        track = Track.objects.get(id=track_id)
+        except JSONDecodeError: 
+            return ResponseError.BadRequest(msg='Please provide json body.')
+
+        try:
+            track = Track.objects.get(id=track_id)
+
+        except Track.DoesNotExist:
+            return ResponseError.NotFound(err='TrackDoesNotExist')
 
         entry = TrackEntry(
                 track = track,
@@ -148,7 +181,7 @@ class Entry(View):
 
             entry.save()
 
-        except e:
+        except Exception as e:
             return ResponseError.SomethingWentWrong()
             raise e
 

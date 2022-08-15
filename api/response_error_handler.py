@@ -16,3 +16,11 @@ class ResponseError:
     def AlreadyExists(err='AlreadyExists', msg='The resource already exists.'):
         
         return JsonResponse({'err': err, 'msg': msg}, status=400)
+
+    @staticmethod
+    def BadRequest(err='BadRequest', msg='Please provide valid data.'):
+        
+        return JsonResponse({
+            'err': err,
+            'msg': msg,
+            }, status=400)
