@@ -128,8 +128,7 @@ class Entry(View):
     # /api/tracks/track_id/entry/
     def get(self, request, track_id):
 
-        # TODO get query options [ number ]
-        limit = 7
+        limit = int(request.GET.get('limit', 7))
 
         try:
 
