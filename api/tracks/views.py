@@ -26,6 +26,7 @@ class Index(View):
         return JsonResponse({ 'tracks': serializer.data }, safe=False)
 
 
+    # CREATE NEW TRACK
     def post(self, request):
 
         request_body = json.loads(request.body.decode('utf-8'))
@@ -70,9 +71,28 @@ class TrackView(View):
 
     
     def put(self, request, track_id):
-        
-        # update track
-        pass 
+
+        # TODO handle request body errors 400
+        request_body = json.loads(request.body.decode('utf-8'))
+
+        try:
+            track = Track.objects.get(id=track_id)
+        except Track.DoesNotExist as e:
+            return JsonResponse({'msg': 'Track not found'}, status=404)
+
+        track.title = request_body.get('title')
+        track.description = request_body.get('description', '')
+        track.color = request_body.get('color', '',)
+
+        # TODO error handling
+        track.save()
+
+        serializer = TrackSerializer(track)
+
+        return JsonResponse({ 
+            'msg': 'Track has been updated.',
+            'track': serializer.data,
+            }, safe=False)
 
 
 class Entry(View):

@@ -26,10 +26,12 @@ SECRET_KEY = 'django-insecure-n%2*vh_hvu7a@lz^cmd##kvb9jt3mngakfq$8lmk^z=-%s3i*h
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"
 
 ALLOWED_HOSTS = [
         'testserver',
+        '*'
         ]
 
 
