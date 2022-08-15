@@ -9,6 +9,7 @@ import json
 
 from .models import Track, TrackEntry
 from .serializers import TrackSerializer, TrackEntrySerializer
+from api.response_error_handler import ResponseError
 
 # Create your views here.
 
@@ -35,7 +36,7 @@ class Index(View):
         try:
             track = Track.objects.get(user=request.current_user, title=request_body.get('title'))
             if track:
-                return HttpResponse('Already exists.', status=400)
+                return ResponseError.AlreadyExists(msg='Track with that title already exists.')
 
         except Track.DoesNotExist as e:
             pass
@@ -78,7 +79,7 @@ class TrackView(View):
         try:
             track = Track.objects.get(id=track_id)
         except Track.DoesNotExist as e:
-            return JsonResponse({'msg': 'Track not found'}, status=404)
+            return ResponseError.NotFound(err='TrackDoesNotExist', msg='Track you are trying to update does not exist.')
 
         track.title = request_body.get('title')
         track.description = request_body.get('description', '')
@@ -103,9 +104,16 @@ class Entry(View):
         # TODO get query options [ number ]
         limit = 7
 
-        entries = TrackEntry.objects.order_by('date').reverse()[0:limit]
+        try:
 
-        serializer = TrackEntrySerializer(entries, many=True)
+            entries = TrackEntry.objects.order_by('date').reverse()[0:limit]
+
+            serializer = TrackEntrySerializer(entries, many=True)
+
+        except TrackEntry.DoesNotExist:
+
+            # TODO ?
+            return ResponseError.NotFound(err='TrackEntryDoesNotExist')
 
         return JsonResponse({
             "limit": limit,
@@ -141,6 +149,7 @@ class Entry(View):
             entry.save()
 
         except e:
+            return ResponseError.SomethingWentWrong()
             raise e
 
         
