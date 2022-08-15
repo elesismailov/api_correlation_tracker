@@ -33,7 +33,7 @@ class Track(models.Model):
 class TrackEntry(models.Model):
 
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    date  = models.DateField(unique=True)
+    date  = models.DateField()
     # TODO google the min max values
     # rating = models.IntegerField(min_value=0, max_value=10)
     rating = models.IntegerField()

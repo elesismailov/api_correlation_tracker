@@ -16,6 +16,7 @@ from api.response_error_handler import ResponseError
 
 class Index(View):
 
+    # List user tracks 
     def get(self, request):
 
         user = request.current_user
@@ -68,6 +69,7 @@ class Index(View):
 class TrackView(View):
     # /api/tracks/track_id/
 
+    # Track details
     def get(self, request, track_id):
 
         user = request.current_user
@@ -113,6 +115,7 @@ class TrackView(View):
             track.save()
 
         except Exception:
+            print(Exception)
             return ResponseError.SomethingWentWrong()
 
         serializer = TrackSerializer(track)
@@ -131,8 +134,13 @@ class Entry(View):
         limit = int(request.GET.get('limit', 7))
 
         try:
+            track = Track.objects.get(id=track_id)
+        except Track.DoesNotExist:
+            return ResponseError.NotFound(err='TrackNotFound')
 
-            entries = TrackEntry.objects.order_by('date').reverse()[0:limit]
+        try:
+
+            entries = TrackEntry.objects.filter(track=track_id).order_by('date').reverse()[0:limit]
 
             serializer = TrackEntrySerializer(entries, many=True)
 
@@ -174,7 +182,7 @@ class Entry(View):
 
         except IntegrityError:
             # UPDATE ENTRY
-            entry = TrackEntry.objects.get(date=entry.date)
+            entry = TrackEntry.objects.get(date=entry.date, track=entry.track)
             
             entry.rating = request_body.get('rating')
 
