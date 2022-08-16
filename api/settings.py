@@ -5,6 +5,8 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+MAX_CONN_AGE = 600
+
 APPEND_SLASH=True
 
 IS_HEROKU = "DYNO" in os.environ
