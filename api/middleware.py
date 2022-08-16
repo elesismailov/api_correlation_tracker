@@ -1,10 +1,10 @@
 
 
 from django.conf import settings
-
 from django.http import JsonResponse
 
 from users.models import CustomUser
+from api.response_error_handler import ResponseError
 
 
 class ApiAuthMiddleware:
@@ -15,7 +15,6 @@ class ApiAuthMiddleware:
 
     def __call__(self, request):
 
-        # TODO Do something about it
         if request.path[0:4] != '/api':
             response = self.get_response(request)
             return response
@@ -23,12 +22,15 @@ class ApiAuthMiddleware:
         api_key = request.headers.get('X-API-KEY')
 
         if not api_key:
-            # TODO Create seperate errors class
-            return JsonResponse({ 'msg': 'Please provide an api key.' }, status=400)
+            return ResponseError.BadRequest(msg='Please provide an api key.')
+        
+        try:
+            user = CustomUser.objects.get(api_key=api_key)
+        except CustomUser.DoesNotExist:
+            return ResponseError.NotFound(err='UserNotFound')
+        except Exception:
+            raise Exception
 
-        user = CustomUser.objects.get(api_key=api_key)
-
-        # Assigning custom property
         request.current_user = user
 
         response = self.get_response(request)
