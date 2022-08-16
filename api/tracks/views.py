@@ -63,7 +63,15 @@ class Index(View):
         except Exception as e:
             return ResponseError.SomethingWentWrong()
 
-        return JsonResponse({'msg': "Successfully created track."}, status=201)
+        try:
+            serializer = TrackSerializer(track)
+        except Exception:
+            return ResponseError.SomethingWentWrong(err=Exception)
+
+        return JsonResponse(
+                { "track": serializer.data },
+                status=201
+                )
 
 
 class TrackView(View):

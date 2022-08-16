@@ -1,13 +1,10 @@
-Package             Version
-------------------- ---------
-asgiref             3.4.1
-certifi             2022.6.15
-Django              3.2.5
-djangorestframework 3.13.1
-pip                 22.1.2
-psycopg2            2.8.6
-pytz                2022.1
-setuptools          61.2.0
-sqlparse            0.4.1
-typing_extensions   4.3.0
-wheel               0.37.1
+asgiref==3.5.2
+certifi @ file:///opt/conda/conda-bld/certifi_1655968806487/work/certifi
+Django==4.1
+djangorestframework==3.13.1
+psycopg2 @ file:///home/builder/ci_310/psycopg2_1640792656405/work
+Pygments==2.12.0
+pytz @ file:///opt/conda/conda-bld/pytz_1654762638606/work
+redgreenunittest==0.1.1
+sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
+typing_extensions @ file:///tmp/abs_ben9emwtky/croots/recipe/typing_extensions_1659638822008/work
