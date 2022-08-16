@@ -15,8 +15,8 @@ class UpdatingTrack(TestCase):
     def setUp(self):
 
         self.user = CustomUser.objects.create_user(
-                    username='testuser1',
-                    email='testuser1@gmail.com',
+                    username='testuser2',
+                    email='testuser2@gmail.com',
                     password='123'
                 )
 
