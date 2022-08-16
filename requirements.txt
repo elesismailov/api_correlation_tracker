@@ -1,11 +1,11 @@
 asgiref==3.5.2
-certifi @ file:///opt/conda/conda-bld/certifi_1655968806487/work/certifi
+certifi
 Django==4.1
 djangorestframework==3.13.1
 gunicorn==20.1.0
-psycopg2 @ file:///home/builder/ci_310/psycopg2_1640792656405/work
+psycopg2
 Pygments==2.12.0
-pytz @ file:///opt/conda/conda-bld/pytz_1654762638606/work
+pytz
 redgreenunittest==0.1.1
-sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
-typing_extensions @ file:///tmp/abs_ben9emwtky/croots/recipe/typing_extensions_1659638822008/work
+sqlparse
+typing_extensions
