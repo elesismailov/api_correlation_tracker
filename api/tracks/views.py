@@ -134,7 +134,7 @@ class Entry(View):
         limit = int(request.GET.get('limit', 7))
 
         try:
-            track = Track.objects.get(id=track_id)
+            track = Track.objects.get(id=track_id, user=request.current_user)
         except Track.DoesNotExist:
             return ResponseError.NotFound(err='TrackNotFound')
 
