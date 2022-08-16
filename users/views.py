@@ -30,21 +30,14 @@ class LogIn(View):
         password = request_body.get('password')
         
         if not email and not username:
-<<<<<<< HEAD
-            return ResponseError.BadRequest(msg='Please provide valid credentials.')
-=======
             return ResponseError.BadRequest(err='InvalidCredentials', msg='Please provide valid credentials.')
->>>>>>> 79cff33 (Implement login route)
 
         if email:
             try:
                 validate_email(email)
             except ValidationError:
-<<<<<<< HEAD
-                return ResponseError.BadRequest(msg='Invalid email.')
-=======
+
                 return ResponseError.BadRequest(err='InvalidEmail', msg='Invalid email.')
->>>>>>> 79cff33 (Implement login route)
 
             user = CustomUser.objects.get(email=email)
 
@@ -57,17 +50,9 @@ class LogIn(View):
             user = authenticate(username=username, password=password)
 
             if not user:
-<<<<<<< HEAD
-                return ResponseError.NotFound(err='InvalidCredentials', msg='Please provide valid credentials.')
 
-            return JsonResponse({'key': user.api_key})
-
-        return ResponseError.NotFound(err='InvalidCredentials', msg='Please provide valid credentials.')
-=======
                 return ResponseError.BadRequest(err='InvalidCredentials', msg='Please provide valid credentials.')
 
             return JsonResponse({'key': user.api_key})
 
         return ResponseError.BadRequest(err='InvalidCredentials', msg='Please provide valid credentials.')
-
->>>>>>> 79cff33 (Implement login route)
