@@ -43,8 +43,6 @@ class UpdatingTrack(TestCase):
                 HTTP_X_API_KEY = self.api_key
                 )
 
-        print(self.api_key)
-
         self.assertIsInstance(response, JsonResponse)
 
     # def test_ok_message(self):

@@ -7,12 +7,51 @@ from django.views import View
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db.utils import IntegrityError
 
 import json
 from json.decoder import JSONDecodeError
 
 from api.response_error_handler import ResponseError
 from users.models import CustomUser
+
+
+class SignUp(View):
+
+    def post(self, request):
+
+        try:
+            request_body = json.loads(request.body.decode('utf-8'))
+
+        except JSONDecodeError: 
+            return ResponseError.BadRequest(msg='Please provide json body.')
+
+        email = request_body.get('email')
+        username = request_body.get('username')
+        password = request_body.get('password')
+
+        if not email and not username and not password:
+            return ResponseError.BadRequest(err='InvalidCredentials', msg='Please provide valid credentials.')
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            return ResponseError.BadRequest(err='InvalidEmail', msg='Invalid email.')
+
+        user = CustomUser(email=email, username=username, password=password)
+
+        try:
+            user.save()
+        except IntegrityError:
+            return ResponseError.BadRequest(err='InvalidCredentials', msg='User with those credentials already exists.')
+
+        except Exception:
+            raise Exception
+
+        return JsonResponse({})
+
+
+
 
 
 class LogIn(View):
