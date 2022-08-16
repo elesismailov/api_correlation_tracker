@@ -8,6 +8,7 @@ def apiIndex(req):
     return JsonResponse({'msg': 'The api index'})
 
 urlpatterns = [
+    path('', apiIndex),
     path('admin/', admin.site.urls),
     path('api/', apiIndex),
     path('api/tracks/', include('api.tracks.urls')),
