@@ -38,7 +38,9 @@ class SignUp(View):
         except ValidationError:
             return ResponseError.BadRequest(err='InvalidEmail', msg='Invalid email.')
 
-        user = CustomUser(email=email, username=username, password=password)
+        user = CustomUser(email=email, username=username)
+
+        user.set_password(password)
 
         try:
             user.save()
@@ -48,7 +50,7 @@ class SignUp(View):
         except Exception:
             raise Exception
 
-        return JsonResponse({})
+        return JsonResponse({'api_key': user.api_key})
 
 
 

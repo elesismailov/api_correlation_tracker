@@ -11,7 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', apiIndex),
     path('api/tracks/', include('api.tracks.urls')),
-    path('log-in/', include('users.urls')),
+    path('users/', include('users.urls')),
     # path('api/bullets/', include('api.bullets.urls')),
     # path('api/streaks/', include('api.streaks.urls')),
 ]
