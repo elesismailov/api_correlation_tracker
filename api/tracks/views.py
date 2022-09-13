@@ -178,23 +178,25 @@ class Entry(View):
         except Track.DoesNotExist:
             return ResponseError.NotFound(err='TrackDoesNotExist')
 
-        entry = TrackEntry(
-                track = track,
-                date = request_body.get('date', timezone.now().date()),
-                rating = request_body.get('rating'),
-                )
-       
         try:
-            # CREATE NEW ENTRY
-            entry.save()
-
-        except IntegrityError:
-            # UPDATE ENTRY
-            entry = TrackEntry.objects.get(date=entry.date, track=entry.track)
-            
+            # Search for an existing one
+            entry = TrackEntry.objects.filter(
+                        date=request_body.get('date', timezone.now().date())
+                    ).last()
             entry.rating = request_body.get('rating')
 
+        except TrackEntry.DoesNotExist:
+            # Create new entry
+            entry = TrackEntry(
+                    track = track,
+                    date = request_body.get('date', timezone.now().date()),
+                    rating = request_body.get('rating'),
+                    )
+       
+        try:
             entry.save()
+        except IntegrityError:
+            return ResponseError.SomethingWentWrong()
 
         except Exception as e:
             return ResponseError.SomethingWentWrong()
@@ -204,7 +206,6 @@ class Entry(View):
         serializer = TrackEntrySerializer(entry)
 
         return JsonResponse({"entry": serializer.data}, status=202)
-        # return JsonResponse({ "entry": entry}, status=201)
 
 
 
