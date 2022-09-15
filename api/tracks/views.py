@@ -12,6 +12,8 @@ from .models import Track, TrackEntry
 from .serializers import TrackSerializer, TrackEntrySerializer
 from api.response_error_handler import ResponseError
 
+from api.tracks.operators import *
+
 # Create your views here.
 
 class Index(View):
@@ -38,40 +40,25 @@ class Index(View):
         except JSONDecodeError: 
             return ResponseError.BadRequest(msg='Please provide json body.')
 
-        if not request_body.get('title').strip():
-            return ResponseError.BadRequest(msg='Please provide at least title.')
 
-        try:
-            track = Track.objects.get(user=request.current_user, title=request_body.get('title'))
-            if track:
-                return ResponseError.AlreadyExists(msg='Track with that title already exists.')
-
-        except Track.DoesNotExist as e:
-            pass
-        
-        track = Track(
+        result = createTrack(
                 user = request.current_user,
                 title = request_body.get('title'),
-                description = request_body.get('description', ''),
-                color = request_body.get('color', ''),
+                description = request_body.get('description'),
+                color = request_body.get('color'),
                 )
+        
+        if not result[0]: # if error
 
-        # TODO define errors
-        try:
-            track.save()
+            try:
+                serializer = TrackSerializer(result[1])
+            except Exception:
+                return ResponseError.SomethingWentWrong(err=Exception)
 
-        except Exception as e:
-            return ResponseError.SomethingWentWrong()
-
-        try:
-            serializer = TrackSerializer(track)
-        except Exception:
-            return ResponseError.SomethingWentWrong(err=Exception)
-
-        return JsonResponse(
-                { "track": serializer.data },
-                status=201
-                )
+            return JsonResponse(
+                    { "track": serializer.data },
+                    status=201
+                    )
 
 
 class TrackView(View):
@@ -136,6 +123,7 @@ class TrackView(View):
 
 class Entry(View):
 
+    # Get N last entries
     # /api/tracks/track_id/entry/
     def get(self, request, track_id):
 
@@ -163,6 +151,7 @@ class Entry(View):
             })
 
 
+    # Create track entry
     # /api/tracks/track_id/entry/
     def post(self, request, track_id):
 
