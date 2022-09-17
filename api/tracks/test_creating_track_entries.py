@@ -52,7 +52,7 @@ class CreatingTrackEntry(TestCase):
                         )
             self.fail('Did not raise an exception.')
 
-        except NoUserError:
+        except InvalidUserError:
             print('Landed NoUserError.')
 
         except Exception:
@@ -74,7 +74,7 @@ class CreatingTrackEntry(TestCase):
                         )
             self.fail('Did not raise an exception.')
 
-        except NoTrackError:
+        except InvalidTrackError:
             print('Landed NoUserError.')
 
         except Exception:
@@ -96,7 +96,7 @@ class CreatingTrackEntry(TestCase):
                         )
             self.fail('Did not raise an exception.')
 
-        except NoTrackEntryRatingError:
+        except InvalidTrackEntryRatingError:
             print('Landed NoUserError.')
 
         except Exception:

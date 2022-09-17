@@ -50,7 +50,7 @@ class CreatingTrack(TestCase):
                         )
             self.fail('Did not raise an exception.')
 
-        except NoUserError:
+        except InvalidUserError:
             print('Landed NoUserError.')
 
         except Exception:
@@ -70,7 +70,7 @@ class CreatingTrack(TestCase):
                         )
             self.fail('Did not raise an exception.')
 
-        except NoTrackTitleError:
+        except InvalidTrackTitleError:
             print('Landed NoTrackTitleError.')
 
         except Exception:

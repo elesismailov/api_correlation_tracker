@@ -50,7 +50,7 @@ class Index(View):
                     color = request_body.get('color'),
                     )
 
-        except NoTrackTitle:
+        except InvalidTrackTitle:
             print(NoTrackTitle)
             return JsonResponse({"Please provide title."}, status=400)
             

@@ -14,10 +14,10 @@ def createTrack(user, title, description=None, color=None):
         Returns a track or raises an error.
     """
     if not title:
-        raise NoTrackTitleError('Please provide title')
+        raise InvalidTrackTitleError('Please provide title')
     
     if not user:
-        raise NoUserError('Cannot create a track with no user provided.')
+        raise InvalidUserError('Cannot create a track with no user provided.')
 
     try:
         track = Track.objects.get(user=user, title=title)
@@ -42,13 +42,13 @@ def createTrack(user, title, description=None, color=None):
 def createTrackEntry(user, track, rating, date=timezone.now().date()):
 
     if not user:
-        raise NoUserError('Please provide user.')
+        raise InvalidUserError('Please provide user.')
 
     if not track:
-        raise NoTrackError('Please provide track.')
+        raise InvalidTrackError('Please provide track.')
 
     if not rating or not isinstance(rating, int):
-        raise NoTrackEntryRatingError('Please provide valid rating.')
+        raise InvalidTrackEntryRatingError('Please provide valid rating.')
 
     try:
         # Search for an existing one

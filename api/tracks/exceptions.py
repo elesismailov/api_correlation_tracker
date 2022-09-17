@@ -1,26 +1,26 @@
 
-class NoTrackTitleError(Exception):
+class InvalidTrackTitleError(Exception):
 
     def __init__(self, message):
         super().__init__(message)
         self.message = message
 
 
-class NoUserError(Exception):
+class InvalidUserError(Exception):
 
     def __init__(self, message):
         super().__init__(message)
         self.message = message
 
 
-class NoTrackError(Exception):
+class InvalidTrackError(Exception):
 
     def __init__(self, message):
         super().__init__(message)
         self.message = message
 
 
-class NoTrackEntryRatingError(Exception):
+class InvalidTrackEntryRatingError(Exception):
 
     def __init__(self, message):
         super().__init__(message)
