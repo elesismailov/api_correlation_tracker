@@ -13,6 +13,7 @@ from .serializers import TrackSerializer, TrackEntrySerializer
 from api.response_error_handler import ResponseError
 
 from api.tracks.operators import *
+from api.tracks.exceptions import *
 
 # Create your views here.
 
@@ -41,24 +42,30 @@ class Index(View):
             return ResponseError.BadRequest(msg='Please provide json body.')
 
 
-        result = createTrack(
-                user = request.current_user,
-                title = request_body.get('title'),
-                description = request_body.get('description'),
-                color = request_body.get('color'),
-                )
-        
-        if not result[0]: # if error
-
-            try:
-                serializer = TrackSerializer(result[1])
-            except Exception:
-                return ResponseError.SomethingWentWrong(err=Exception)
-
-            return JsonResponse(
-                    { "track": serializer.data },
-                    status=201
+        try:
+            result = createTrack(
+                    user = request.current_user,
+                    title = request_body.get('title'),
+                    description = request_body.get('description'),
+                    color = request_body.get('color'),
                     )
+
+        except NoTrackTitle:
+            print(NoTrackTitle)
+            return JsonResponse({"Please provide title."}, status=400)
+            
+        except Exception:
+            if not result[0]: # if error
+
+                try:
+                    serializer = TrackSerializer(result[1])
+                except Exception:
+                    return ResponseError.SomethingWentWrong(err=Exception)
+
+                return JsonResponse(
+                        { "track": serializer.data },
+                        status=201
+                        )
 
 
 class TrackView(View):

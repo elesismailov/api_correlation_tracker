@@ -1,35 +1,40 @@
 
+from api.tracks.exceptions import *
 
-def createTrack(user, title, description, color):
+from api.tracks.models import Track, TrackEntry
+from users.models import CustomUser as User
+
+
+def createTrack(user, title, description=None, color=None):
     """
         Creates a track.
         Returns an array [{"error"}, None] if an error occured.
         Returns an array [None, Data] otherwise.
     """
     if not title:
-        return [ {"error": "NoTitle", "message": "Please provide at least title."}, None ]
+        raise NoTrackTitleError('Please provide title')
     
     if not user:
-        return [{"error": "NoUser", "message": "Please provide valid data."}, None]
+        raise NoUserError('Cannot create a track with no user provided.')
 
     try:
         track = Track.objects.get(user=user, title=title)
         if track:
-            return [{"error": "TrackAlreadyExists"}, None]
+            raise TrackAlreadyExistsError('Track with that title already exists.')
 
     except Track.DoesNotExist as e:
         pass
     
-    track = Track( user = user, title = title, description = description, color = color,)
+    track = Track( user = user, title = title, description = description or '', color = color or '')
 
     # TODO define errors
     try:
         track.save()
 
     except Exception as e:
-        return [{"error": "TrackAlreadyExists", "message": "Could not save into the database"}, None]
+        raise e
 
-    return [None, track]
+    return track
 
 
 def createTrackEntry():
