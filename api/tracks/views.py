@@ -41,31 +41,33 @@ class Index(View):
         except JSONDecodeError: 
             return ResponseError.BadRequest(msg='Please provide json body.')
 
-
         try:
-            result = createTrack(
+            track = createTrack(
                     user = request.current_user,
                     title = request_body.get('title'),
                     description = request_body.get('description'),
                     color = request_body.get('color'),
                     )
 
-        except InvalidTrackTitle:
-            print(NoTrackTitle)
-            return JsonResponse({"Please provide title."}, status=400)
+        except InvalidTrackTitleError:
+            return ResponseError.BadRequest('Please provide title.')
+        except InvalidUserError:
+            return ResponseError.BadRequest('InvalidUser')
+        except InvalidRatingError:
+            return ResponseError.BadRequest('InvalidRating')
             
         except Exception:
-            if not result[0]: # if error
+            raise Exception
 
-                try:
-                    serializer = TrackSerializer(result[1])
-                except Exception:
-                    return ResponseError.SomethingWentWrong(err=Exception)
+        try:
+            serializer = TrackSerializer(result)
+        except Exception:
+            return ResponseError.SomethingWentWrong(err=Exception)
 
-                return JsonResponse(
-                        { "track": serializer.data },
-                        status=201
-                        )
+        return JsonResponse(
+                { "track": serializer.data },
+                status=201
+                )
 
 
 class TrackView(View):

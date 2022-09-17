@@ -86,15 +86,21 @@ def createTrackEntry(user, track, rating, date=timezone.now().date()):
     return entry
 
 
+def getTracks(user, limit=7):
+
+    if not user:
+        raise InvalidUserError('')
+
+    tracks = Track.objects.filter(user=user).order_by('title')[0:limit]
+    
+    return list(tracks)
+
+
 def getTrack():
     pass
 
 
 def getTrackEntries():
-    pass
-
-
-def getUserTracks():
     pass
 
 
