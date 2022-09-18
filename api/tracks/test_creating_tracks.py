@@ -51,7 +51,7 @@ class CreatingTrack(TestCase):
             self.fail('Did not raise an exception.')
 
         except InvalidUserError:
-            print('Landed NoUserError.')
+            pass
 
         except Exception:
             self.fail('Other exception was raised')
@@ -71,7 +71,7 @@ class CreatingTrack(TestCase):
             self.fail('Did not raise an exception.')
 
         except InvalidTrackTitleError:
-            print('Landed NoTrackTitleError.')
+            pass
 
         except Exception:
             self.fail('Other exception was raised')
@@ -101,7 +101,7 @@ class CreatingTrack(TestCase):
             self.fail('Did not raise an exception.')
 
         except TrackAlreadyExistsError:
-            print('Landed TrackAlreadyExistsError.')
+            pass
 
         except Exception:
             self.fail('Other exception was raised')

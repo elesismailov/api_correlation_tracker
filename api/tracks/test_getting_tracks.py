@@ -70,7 +70,7 @@ class GettingAllTracks(TestCase):
             self.fail('Did not raise an exception.')
 
         except InvalidUserError:
-            print('Landed NoUserError.')
+            pass
 
         except Exception:
             self.fail('Other exception was raised')

@@ -96,8 +96,21 @@ def getTracks(user, limit=7):
     return list(tracks)
 
 
-def getTrack():
-    pass
+def getTrack(user, track_id):
+
+    if not user:
+        raise InvalidUserError('')
+
+    if not track_id:
+        raise InvalidTrackError('')
+    
+    try:
+        track = Track.objects.get(user=user, id=track_id)
+
+    except Track.DoesNotExist:
+        pass
+
+    return track
 
 
 def getTrackEntries():
