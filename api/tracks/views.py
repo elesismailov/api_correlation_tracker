@@ -24,7 +24,10 @@ class Index(View):
 
         user = request.current_user
         
-        tracks = Track.objects.filter(user=user)
+        try:
+            tracks = getTracks(user=user)
+        except Exception:
+            raise Exception
 
         serializer = TrackSerializer(tracks, many=True)
 

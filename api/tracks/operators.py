@@ -104,11 +104,7 @@ def getTrack(user, track_id):
     if not track_id:
         raise InvalidTrackError('')
     
-    try:
-        track = Track.objects.get(user=user, id=track_id)
-
-    except Track.DoesNotExist:
-        pass
+    track = Track.objects.get(user=user, id=track_id)
 
     return track
 
