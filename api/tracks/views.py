@@ -174,35 +174,15 @@ class Entry(View):
             return ResponseError.BadRequest(msg='Please provide json body.')
 
         try:
-            track = Track.objects.get(id=track_id)
+            track = Track.objects.get(user=request.current_user, id=track_id)
 
         except Track.DoesNotExist:
             return ResponseError.NotFound(err='TrackDoesNotExist')
 
         try:
-            # Search for an existing one
-            entry = TrackEntry.objects.filter(
-                        date=request_body.get('date', timezone.now().date())
-                    ).last()
-            entry.rating = request_body.get('rating')
-
-        except TrackEntry.DoesNotExist:
-            # Create new entry
-            entry = TrackEntry(
-                    track = track,
-                    date = request_body.get('date', timezone.now().date()),
-                    rating = request_body.get('rating'),
-                    )
-       
-        try:
-            entry.save()
-        except IntegrityError:
-            return ResponseError.SomethingWentWrong()
-
-        except Exception as e:
-            return ResponseError.SomethingWentWrong()
-            raise e
-
+            entry = createTrackEntry(track=track, rating=request_body.get('rating'), date=request_body.get('rating'))
+        except Exception:
+            ResponseError.SomethingWentWrong()
         
         serializer = TrackEntrySerializer(entry)
 

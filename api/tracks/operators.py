@@ -39,10 +39,7 @@ def createTrack(user, title, description=None, color=None):
     return track
 
 
-def createTrackEntry(user, track, rating, date=timezone.now().date()):
-
-    if not user:
-        raise InvalidUserError('Please provide user.')
+def createTrackEntry(track, rating, date=timezone.now().date()):
 
     if not track:
         raise InvalidTrackError('Please provide track.')
@@ -109,8 +106,15 @@ def getTrack(user, track_id):
     return track
 
 
-def getTrackEntries():
-    pass
+def getTrackEntries(track):
+
+    if not track:
+        raise InvalidTrackError('Please provide valid track.')
+    
+    entries = TrackEntry.objects.filter(track=track).order_by('-date')
+    print(entries)
+
+    return list(entries)
 
 
 def updateTrack():
