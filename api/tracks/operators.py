@@ -117,6 +117,30 @@ def getTrackEntries(track):
     return list(entries)
 
 
-def updateTrack():
-    pass
+def updateTrack(track_id, title=None, description=None, color=None):
+
+    if not track_id:
+        raise InvalidTrackError('')
+
+    track = Track.objects.get(id=track_id)
+    
+    track.title       = title or track.title
+    track.description = description or track.description
+    track.color       = color or track.color
+
+    try:
+        track.save()
+    except Exception:
+        pass
+
+    return track
+
+
+
+
+
+
+
+
+
 
