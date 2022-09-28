@@ -27,6 +27,10 @@ class InvalidTrackEntryRatingError(Exception):
         self.message = message
 
 
+class InvalidTrackEntryError(Exception):
+    pass
+
+
 class TrackAlreadyExistsError(Exception):
 
     def __init__(self, message):

@@ -82,7 +82,7 @@ class TrackView(View):
         user = request.current_user
 
         try:
-            track = Track.objects.get(id=track_id, user=user)
+            track = getTrack(user=user, track_id=track_id)
 
         except Track.DoesNotExist:
             return ResponseError.NotFound(err='TrackDoesNotExist')
@@ -107,29 +107,22 @@ class TrackView(View):
             return ResponseError.BadRequest(msg='Please provide at least one field to update.')
 
         try:
-            track = Track.objects.get(id=track_id)
+            track = updateTrack(
+                        track_id=track_id,
+                        title = request_body.get('title'),
+                        description = request_body.get('description'),
+                        color = request_body.get('color')
+                    )
 
         except Track.DoesNotExist as e:
 
             return ResponseError.NotFound(err='TrackDoesNotExist', msg='Track you are trying to update does not exist.')
 
-        track.title = request_body.get('title', track.title)
-        track.description = request_body.get('description', track.description)
-        track.color = request_body.get('color', track.color)
-
-        # TODO define errors
-        try:
-            track.save()
-
-        except Exception:
-            print(Exception)
-            return ResponseError.SomethingWentWrong()
-
         serializer = TrackSerializer(track)
 
         return JsonResponse({ 
-            'msg': 'Track has been updated.',
-            'track': serializer.data,
+                'message': 'Track has been updated.',
+                'track': serializer.data,
             }, safe=False)
 
 
@@ -146,16 +139,13 @@ class Entry(View):
         except Track.DoesNotExist:
             return ResponseError.NotFound(err='TrackNotFound')
 
-        try:
-
-            entries = TrackEntry.objects.filter(track=track_id).order_by('date').reverse()[0:limit]
-
-            serializer = TrackEntrySerializer(entries, many=True)
-
         except TrackEntry.DoesNotExist:
-
-            # TODO ?
             return ResponseError.NotFound(err='TrackEntryDoesNotExist')
+
+        except Exception:
+            pass
+
+        serializer = TrackEntrySerializer(entries, many=True)
 
         return JsonResponse({
             "limit": limit,

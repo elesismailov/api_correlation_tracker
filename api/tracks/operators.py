@@ -106,13 +106,17 @@ def getTrack(user, track_id):
     return track
 
 
-def getTrackEntries(track):
+def getTrackEntries(track_id, limit=7):
 
     if not track:
         raise InvalidTrackError('Please provide valid track.')
+
+    try:
+        track = Track.objects.get(id=track_id)
+    except Track.DoesNotExist:
+        raise Track.DoesNotExist
     
-    entries = TrackEntry.objects.filter(track=track).order_by('-date')
-    print(entries)
+    entries = TrackEntry.objects.filter(track=track_id).order_by('-date')[0:limit]
 
     return list(entries)
 
@@ -136,6 +140,18 @@ def updateTrack(track_id, title=None, description=None, color=None):
     return track
 
 
+
+
+def deleteTrackEntry(entry_id):
+
+    if not entry_id:
+        raise InvalidTrackEntryError
+    
+    entry = TrackEntry.objects.get(id=entry_id)
+
+    entry.delete()
+
+    return entry
 
 
 
