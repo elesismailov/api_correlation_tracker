@@ -9,7 +9,7 @@ from users.models import CustomUser
 
 import os
 
-from api.tracks.tests_.test_delete_track_route import *
+from api.tracks.tests_.test_delete_track_route import DeleteTrackRoute
 
 
 class UpdatingTrack(TestCase):

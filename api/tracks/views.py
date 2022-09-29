@@ -8,8 +8,8 @@ from django.db.utils import IntegrityError
 import json
 from json.decoder import JSONDecodeError
 
-from .models import Track, TrackEntry
-from .serializers import TrackSerializer, TrackEntrySerializer
+from api.tracks.models import Track, TrackEntry
+from api.tracks.serializers import TrackSerializer, TrackEntrySerializer
 from api.response_error_handler import ResponseError
 
 from api.tracks.operators import *
@@ -79,6 +79,7 @@ class TrackView(View):
     # Track details
     def get(self, request, track_id):
 
+        print('Got through...')
         user = request.current_user
 
         try:
@@ -93,6 +94,32 @@ class TrackView(View):
             return ResponseError.SomethingWentWrong(err=Exception)
 
         return JsonResponse({ 'track': serializer.data }, safe=False)
+
+
+
+    def delete(self, request, track_id):
+
+        user = request.current_user
+
+        try:
+            track = getTrack(track_id=track_id, user=user)
+        except Track.DoesNotExist:
+            return ResponseError.NotFound()
+
+        try:
+            track.delete()
+        except Exception as e:
+            return ResponseError.SomethingWentWrong()
+        
+        try:
+            serializer = TrackSerializer(track)
+        except Exception:
+            return ResponseError.SomethingWentWrong(err=Exception)
+
+        return JsonResponse({ 'track': serializer.data }, safe=False)
+
+
+
 
     # Updating track
     def put(self, request, track_id):
