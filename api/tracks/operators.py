@@ -155,6 +155,29 @@ def deleteTrackEntry(entry_id):
 
 
 
+def deleteTrack(track_id):
+    
+    if not track_id:
+        raise InvalidTrackError('')
+
+    track = Track.objects.get(id=track_id)
+
+    try:
+        track.delete()
+
+    except Exception as e:
+        raise e
+
+    return track
+
+
+
+
+
+
+
+
+
 
 
 
