@@ -1,8 +1,9 @@
 from django.urls import path, include
-from .views import Index, Entry, TrackView
+from api.tracks.views import *
 
 urlpatterns = [
     path('', Index.as_view()),
     path('<track_id>/', TrackView.as_view()),
-    path('<track_id>/entry/', Entry.as_view()),
+    path('<track_id>/entries/', Entries.as_view()),
+    path('<track_id>/entries/<entry_id>', Entry.as_view()),
 ]

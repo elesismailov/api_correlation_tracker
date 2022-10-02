@@ -151,10 +151,10 @@ class TrackView(View):
             }, safe=False)
 
 
-class Entry(View):
+class Entries(View):
 
     # Get N last entries
-    # /api/tracks/track_id/entry/
+    # /api/tracks/track_id/entries/
     def get(self, request, track_id):
 
         limit = int(request.GET.get('limit', 7))
@@ -179,7 +179,7 @@ class Entry(View):
 
 
     # Create track entry
-    # /api/tracks/track_id/entry/
+    # /api/tracks/track_id/entries/
     def post(self, request, track_id):
 
         try:
@@ -204,5 +204,27 @@ class Entry(View):
         return JsonResponse({"entry": serializer.data}, status=202)
 
 
+class Entry(View):
 
+    def delete(self, request, track_id, entry_id):
+
+        user = request.current_user
+
+        try:
+            track = getTrack(track_id=track_id, user=user)
+        except Track.DoesNotExist:
+            return ResponseError.NotFound()
+
+        try:
+            entry = TrackEntry.object.get(track=track, id=entry_id)
+        except TrackEntry.DoesNotExist:
+            return ResponseError.NotFound()
+
+        try:
+            entry.delete()
+        except Exception as e:
+            return ResponseError.SomethingWentWrong()
+            
+
+        return JsonResponse({}, status=200)
 
