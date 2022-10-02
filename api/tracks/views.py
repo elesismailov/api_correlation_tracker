@@ -119,8 +119,6 @@ class TrackView(View):
         return JsonResponse({ 'track': serializer.data }, safe=False)
 
 
-
-
     # Updating track
     def put(self, request, track_id):
 
